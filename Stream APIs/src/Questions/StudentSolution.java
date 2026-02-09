@@ -1,9 +1,6 @@
 package Questions;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.SortedMap;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class StudentSolution {
@@ -13,7 +10,7 @@ public class StudentSolution {
      * <p>2. Find the students whose First Name starts with "A". Print their full names and email addresses.</p>
      * <p>3. Find the students who are above 20 years old and are in the "Computer Science" department. Print their full names, ages, and departments.</p>
      * <p>4. Group the students by their department and count how many students are in each department. Print the department names along with the student counts.</p>
-     *
+     * <p>5. Group the student by maximum grades by their department</p>
      *
      *
      *
@@ -25,19 +22,30 @@ public class StudentSolution {
         StudentStream studentStream = new StudentStream();
 
         // 2. Find the students whose First Name starts with "A". Print their full names and email addresses.
-        System.out.println("\nStudents whose First Name starts with 'A' and are in the 'Computer Science' department: \n");
+
+        System.out.println("\n1) Students whose First Name starts with 'A' and are in the 'Computer Science' department: \n");
+        System.out.println("-".repeat(Integer.parseInt("54")));
+        System.out.printf("| %-23s | %-25s|%n", "Full Name", "Email");
+        System.out.println("-".repeat(Integer.parseInt("54")));
         for (Student student : findStudentFirstNameStartsWithA(studentStream.students))
-            System.out.println(student.getFirstName() + " " + student.getLastName() + " - Email: " + student.getEmail());
+            System.out.printf("| %-23s | %-25s|%n".formatted(student.getFirstName() + " " + student.getLastName(), student.getEmail()));
+        System.out.println("-".repeat(Integer.parseInt("54")));
 
         // 3. Find the students who are above 20 years old and are in the "Computer Science" department. Print their full names, ages, and departments.
-        System.out.println("\nStudents who are above 20 years old and are in the 'Computer Science' department: \n");
-
+        System.out.println("\n2) Students who are above 20 years old and are in the 'Computer Science' department: \n");
+        System.out.println("-".repeat(Integer.parseInt("60")));
+        System.out.printf("| %-23s | %-5s | %-20s   |%n", "Full Name", "Age", "Department");
+        System.out.println("-".repeat(Integer.parseInt("60")));
         for (Student student : findStudentAgeAbove20AndDepartmentComputerScience(studentStream.students))
-            System.out.println(student.getFirstName() + " " + student.getLastName() + " - Age: " + student.getAge() + ", Department: " + student.getDepartment());
+            System.out.printf("| %-23s | %-5d | %-20s   |%n".formatted(student.getFirstName() + " " + student.getLastName(), student.getAge(), student.getDepartment()));
+        System.out.println("-".repeat(Integer.parseInt("60")));
 
         // 4. Group the students by their department and count how many students are in each department. Print the department names along with the student counts.
-        System.out.println("\nStudents grouped by department: \n");
         groupStudentsByDepartment(studentStream.students);
+
+        // 5. Group the student by maximum grades by their department
+        groupStudentsByMaxGradeByDepartment(studentStream.students);
+
     }
 
     private static List<Student> findStudentFirstNameStartsWithA(List<Student> students) {
@@ -56,11 +64,38 @@ public class StudentSolution {
     private static void groupStudentsByDepartment(List<Student> students) {
         Map<String, Long> groupedByDepartment = students.stream()
                 .collect(Collectors.groupingBy(Student::getDepartment, Collectors.counting()));
-        System.out.println("\nStudents grouped by department: \n");
+
+        System.out.println("\n3) Students grouped by department: \n");
+
+        System.out.println("-".repeat(Integer.parseInt("37")));
+        System.out.println("| %-23s | %-7s |".formatted("Department", "Count"));
+        System.out.println("-".repeat(Integer.parseInt("37")));
+
         groupedByDepartment.entrySet().stream()
                 .sorted(Map.Entry.comparingByValue())
-                .forEach(entry -> System.out.println(entry.getKey() + ", " + entry.getValue()));
+                .forEach(entry -> System.out.printf("%-25s | %-2s      |%n".formatted(entry.getKey(), entry.getValue())));
+        System.out.println("-".repeat(Integer.parseInt("37")));
 
     }
 
+    private static void groupStudentsByMaxGradeByDepartment(List<Student> students) {
+        Map<String, Student> groupedMyMaxGradeByDepartment = students.stream()
+                .collect(Collectors.groupingBy(Student::getDepartment, Collectors.collectingAndThen(
+                        Collectors.maxBy(Comparator.comparingDouble(Student::getGrade)),
+                        Optional::get
+                )));
+
+        System.out.println("\n4) Students grouped by max grade by department: \n");
+        System.out.println("-".repeat(Integer.parseInt("36")));
+        System.out.printf("| %-20s | %-7s |%n", "Department", "Max Grade");
+        System.out.println("-".repeat(Integer.parseInt("36")));
+        groupedMyMaxGradeByDepartment.entrySet().stream()
+                .sorted(Map.Entry.comparingByValue(Comparator.comparingDouble(Student::getGrade).reversed()))
+                .forEach(entry -> System.out.printf("%-23s|%5.2f %6s %n", entry.getValue().getDepartment(), entry.getValue().getGrade(), "|"));
+
+        System.out.println("-".repeat(Integer.parseInt("36")));
+    }
 }
+
+
+
