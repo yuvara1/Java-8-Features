@@ -14,9 +14,7 @@ public class Student {
     private String email;
     private String city;
 
-    public Student() {
-        // no-arg constructor (JavaBean + JPA)
-    }
+
 
     public Student(int id, String firstName, String lastName, int age, String gender,
                    String department, int joinedYear, double grade,
