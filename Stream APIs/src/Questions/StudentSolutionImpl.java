@@ -4,6 +4,7 @@ import java.util.*;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 
 /**
@@ -141,18 +142,30 @@ import java.util.stream.Collectors;
 
 
 public class StudentSolutionImpl {
+    /**
+     * 1. Find students whose first name starts with "A" and print their full name and email.
+     *
+     **/
     public List<Student> findStudentFirstNameStartsWithA(List<Student> students) {
         return students.stream()
                 .filter(s -> s.getFirstName().startsWith("A"))
                 .collect(Collectors.toList());
     }
 
+    /**
+     * 2. Find students who are above 20 years and belong to the Computer Science department.
+     *
+     **/
     public List<Student> findStudentAgeAbove20AndDepartmentComputerScience(List<Student> students) {
         return students.stream()
                 .filter(student -> student.getAge() > 20 && student.getDepartment().equalsIgnoreCase("computer science"))
                 .collect(Collectors.toList());
     }
 
+    /**
+     * 3. Group students by department and count students in each group.
+     *
+     **/
     public void groupStudentsByDepartment(List<Student> students) {
         Map<String, Long> groupedByDepartment = students.stream()
                 .collect(Collectors.groupingBy(Student::getDepartment, Collectors.counting()));
@@ -165,10 +178,14 @@ public class StudentSolutionImpl {
 
         groupedByDepartment.entrySet().stream()
                 .sorted(Map.Entry.comparingByValue())
-                .forEach(entry -> System.out.printf("%-25s | %-2s      |%n".formatted(entry.getKey(), entry.getValue())));
+                .forEach(entry -> System.out.printf("%-25s | %-2s      |%n", entry.getKey(), entry.getValue()));
         System.out.println("-".repeat(Integer.parseInt("37")));
     }
 
+    /**
+     * 4. Group students by department and find the maximum grade in each.
+     *
+     **/
     public void groupStudentsByMaxGradeByDepartment(List<Student> students) {
         Map<String, Student> groupedMyMaxGradeByDepartment = students.stream()
                 .collect(Collectors.toMap(Student::getDepartment, Function.identity(), BinaryOperator.maxBy(Comparator.comparingDouble(Student::getGrade))));
@@ -184,6 +201,10 @@ public class StudentSolutionImpl {
         System.out.println("-".repeat(Integer.parseInt("36")));
     }
 
+    /**
+     * 5. Find all active students whose grade is above their department average.
+     *
+     **/
     public List<Student> findActiveStudentsAboveDepartmentAverage(List<Student> students) {
 
         Map<String, Double> departmentAverageGrades = students.stream()
@@ -206,6 +227,10 @@ public class StudentSolutionImpl {
 
     }
 
+    /**
+     * 6. List students who joined before 2022 and sort them by grade, then age.
+     *
+     **/
     public void findStudentsJoinedBefore2022SortedByGradeAndAge(List<Student> students) {
         List<Student> studentsBefore2022 = students.stream()
                 .filter(student -> student.getJoinedYear() > 2019)
@@ -216,10 +241,14 @@ public class StudentSolutionImpl {
         System.out.println("-".repeat(Integer.parseInt("47")));
         System.out.printf("| %-17s | %-10s| %-3s | %-2s|%n", "Full Name", "Joined year", "Grade", "Age");
         System.out.println("-".repeat(Integer.parseInt("47")));
-        studentsBefore2022.forEach(student -> System.out.printf("| %-17s | %-10s | %-5.2f | %-2d |%n".formatted(student.getFirstName() + " " + student.getLastName(), student.getJoinedYear(), student.getGrade(), student.getAge())));
+        studentsBefore2022.forEach(student -> System.out.printf("| %-17s | %-10s | %-5.2f | %-2d |%n", student.getFirstName() + " " + student.getLastName(), student.getJoinedYear(), student.getGrade(), student.getAge()));
         System.out.println("-".repeat(Integer.parseInt("47")));
     }
 
+    /**
+     * 7. Find students whose email domain is gmail.com and whose city is not null.
+     *
+     **/
     public void findStudentsWithGmailAndCityNotNull(List<Student> students) {
         List<Student> studentsWithGmailAndCityNotNull = students.stream()
                 .filter(student -> student.getEmail().contains("gmail.com") && student.getCity() != null)
@@ -228,11 +257,15 @@ public class StudentSolutionImpl {
         System.out.println("-".repeat(Integer.parseInt("60")));
         System.out.printf("| %-15s | %-24s | %-10s  |%n", "Full Name", "Email", "City");
         System.out.println("-".repeat(Integer.parseInt("60")));
-        studentsWithGmailAndCityNotNull.forEach(student -> System.out.printf("| %-15s | %-24s | %-10s |%n".formatted(student.getFirstName() + " " + student.getLastName(), student.getEmail(), student.getCity())));
+        studentsWithGmailAndCityNotNull.forEach(student -> System.out.printf("| %-15s | %-24s | %-10s |%n", student.getFirstName() + " " + student.getLastName(), student.getEmail(), student.getCity()));
         System.out.println("-".repeat(Integer.parseInt("60")));
 
     }
 
+    /**
+     * 9. Find distinct cities where more than 3 students are present.
+     *
+     **/
     public void retrieveStudetentsWithUniqueFirstNames(List<Student> students) {
         Map<String, Long> firstNameCounts = students.stream()
                 .collect(Collectors.groupingBy(Student::getFirstName, Collectors.counting()));
@@ -244,13 +277,16 @@ public class StudentSolutionImpl {
         System.out.println("-".repeat(Integer.parseInt("60")));
         System.out.printf("| %-15s | %-24s |%n", "Full Name", "First Name Count");
         System.out.println("-".repeat(Integer.parseInt("60")));
-        studentsWithUniqueFirstNames.forEach(student -> System.out.printf("| %-15s | %-24s |%n".formatted(student.getFirstName() + " " + student.getLastName(), firstNameCounts.get(student.getFirstName()))));
+        studentsWithUniqueFirstNames.forEach(student -> System.out.printf("| %-15s | %-24s |%n", student.getFirstName() + " " + student.getLastName(), firstNameCounts.get(student.getFirstName())));
         System.out.println("-".repeat(Integer.parseInt("60")));
 
     }
 
     /**
      * GROUPING + COLLECTING
+     *
+     * Group students by city and count only active students.
+     * @param students
      */
     public void groupStudentsByCityAndCountActive(List<Student> students) {
         Map<String, Long> activeStudentsByCity = students.stream()
@@ -303,6 +339,10 @@ public class StudentSolutionImpl {
         System.out.println("-".repeat(Integer.parseInt("40")));
     }
 
+    /**
+     * Find the maximum age among inactive students.
+     *
+     */
     public void maximumAgeAmongInactiveStudents(List<Student> students) {
         Optional<Integer> maxAge = students.stream()
                 .filter(student -> !student.isActive())
@@ -316,6 +356,10 @@ public class StudentSolutionImpl {
         System.out.println("-".repeat(Integer.parseInt("40")));
     }
 
+    /**
+     * Find the sum of grades of students from Chennai using reduce().
+     *
+     */
     public void sumOfGradesOfStudentsFromChennai(List<Student> students) {
         double sumOfGrades = students.stream()
                 .filter(student -> "Chennai".equalsIgnoreCase(student.getCity()))
@@ -329,6 +373,7 @@ public class StudentSolutionImpl {
         System.out.println("-".repeat(Integer.parseInt("40")));
     }
 
+    
     public void overallAverageGradeExcludingInactiveStudents(List<Student> students) {
         OptionalDouble averageGrade = students.stream()
                 .filter(Student::isActive)
@@ -496,4 +541,180 @@ public class StudentSolutionImpl {
                 .forEach(entry -> System.out.printf("| %-20s | %-7.2f |%n", entry.getKey(), entry.getValue()));
         System.out.println("-".repeat(Integer.parseInt("40")));
     }
+
+    public void countStudentsWithGradeAbove8UsingParallelStreams(List<Student> students) {
+        long count = students.parallelStream()
+                .filter(student -> student.getGrade() > 8)
+                .count();
+
+        System.out.println("The number of students with grade > 8 is: " + count);
+
+        System.out.println("The answer to the question 'Count students with grade > 8 using parallel streams and ensure correctness' is: " + count);
+
+    }
+
+    public void identityUnsafeOperationsForParallelStreams() {
+        System.out.println("Unsafe operations for parallel streams include:");
+        System.out.println("- Modifying shared mutable state (e.g., using non-thread-safe collections or variables)");
+        System.out.println("- Using non-thread-safe data structures (e.g., ArrayList, HashMap without proper synchronization)");
+        System.out.println("- Performing side effects (e.g., printing to console, modifying external variables)");
+        System.out.println("- Using non-associative operations in reductions (e.g., using a non-associative function in reduce())");
+
+    }
+
+    public void covertSequentialStreamToParallelAndAnalyzeOrderImpact(List<Student> students) {
+        System.out.println("Converting a sequential stream to parallel and analyzing order impact:");
+        System.out.println("Original sequential stream:");
+        students.stream()
+                .filter(student -> student.getGrade() > 8)
+                .forEach(student -> System.out.println(student.getFirstName() + " " + student.getLastName() + " (" + student.getGrade() + ")"));
+
+        System.out.println("\nParallel stream (order may not be preserved):");
+        students.parallelStream()
+                .filter(student -> student.getGrade() > 8)
+                .forEach(student -> System.out.println(student.getFirstName() + " " + student.getLastName() + " (" + student.getGrade() + ")"));
+
+        System.out.println("\nNote: The order of output in the parallel stream may differ from the sequential stream due to concurrent processing.");
+    }
+
+    // LOGIC-HEAVY PROBLEMS
+    public void findStudentsAboveOverallAndDepartmentAverages(List<Student> students) {
+        List<Student> overallAndDepartmentAboveAverageStudents = students.stream()
+                .filter(student -> {
+                    double overallAverage = students.stream().mapToDouble(Student::getGrade).average().orElse(0);
+                    double departmentAverage = students.stream()
+                            .filter(s -> s.getDepartment().equalsIgnoreCase(student.getDepartment()))
+                            .mapToDouble(Student::getGrade).average().orElse(0);
+                    return student.getGrade() > overallAverage && student.getGrade() > departmentAverage;
+                })
+                .toList();
+
+        System.out.println("-".repeat(Integer.parseInt("60")));
+        System.out.printf("| %-15s | %-24s | %-10s  |%n", "Full Name", "Department", "Grade");
+        System.out.println("-".repeat(Integer.parseInt("60")));
+        overallAndDepartmentAboveAverageStudents.forEach(student -> System.out.printf("| %-15s | %-24s | %-10.2f |%n", student.getFirstName() + " " + student.getLastName(), student.getDepartment(), student.getGrade()));
+        System.out.println("-".repeat(Integer.parseInt("60")));
+
+    }
+
+    public void findYoungestTopGradeStudentFromEachDepartment(List<Student> students) {
+        Map<String, Optional<Student>> youngestTopGradeStudentByDepartment = students.stream()
+                .collect(Collectors.groupingBy(
+                        Student::getDepartment,
+                        Collectors.collectingAndThen(
+                                Collectors.toList(),
+                                list -> list.stream()
+                                        .min(Comparator.comparingDouble(Student::getGrade)
+                                                .reversed()
+                                                .thenComparingInt(Student::getAge))
+
+                        )
+                ));
+
+        System.out.println("-".repeat(Integer.parseInt("60")));
+        System.out.printf("| %-25s | %-20s |%n", "Department", "Youngest Top Grade Student");
+        System.out.println("-".repeat(Integer.parseInt("60")));
+        youngestTopGradeStudentByDepartment.forEach((department, studentOptional) -> {
+            String studentInfo = studentOptional
+                    .map(student -> student.getFirstName() + " " + student.getLastName() + " (" + student.getGrade() + ", Age: " + student.getAge() + ")")
+                    .orElse("No Students Found");
+            System.out.printf("| %-25s | %-20s |%n", department, studentInfo);
+        });
+        System.out.println("-".repeat(Integer.parseInt("60")));
+    }
+
+    public void identifyCitiesWhereAllStudentsAreActive(List<Student> students) {
+        Map<String, List<Student>> citiesWithAllActiveStudents = students.stream()
+                .filter(student -> student.getCity() != null)
+                .collect(Collectors.groupingBy(Student::getCity))
+                .entrySet().stream()
+                .filter(entry -> entry.getValue().stream().allMatch(Student::isActive))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+        System.out.println("-".repeat(Integer.parseInt("40")));
+        System.out.printf("| %-20s | %-7s |%n", "City", "Active Students Count");
+        System.out.println("-".repeat(Integer.parseInt("40")));
+        citiesWithAllActiveStudents.forEach((city, studentList) -> {
+            System.out.printf("| %-20s | %-7d |%n", city, studentList.size());
+        });
+        System.out.println("-".repeat(Integer.parseInt("40")));
+    }
+
+    public void findDepartmentsWhereAverageGradeIncreasesByJoinedYear(List<Student> students) {
+        Map<String, List<Student>> studentsByDepartment = students.stream()
+                .collect(Collectors.groupingBy(Student::getDepartment));
+
+        Map<String, Boolean> departmentsWithIncreasingAverageGrade = studentsByDepartment.entrySet().stream()
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        entry -> {
+                            List<Student> departmentStudents = entry.getValue();
+                            Map<Integer, Double> averageGradeByYear = departmentStudents.stream()
+                                    .collect(Collectors.groupingBy(Student::getJoinedYear, Collectors.averagingDouble(Student::getGrade)));
+                            List<Map.Entry<Integer, Double>> sortedAverageGrades = averageGradeByYear.entrySet().stream()
+                                    .sorted(Map.Entry.comparingByKey())
+                                    .toList();
+                            return IntStream.range(1, sortedAverageGrades.size())
+                                    .allMatch(i -> sortedAverageGrades.get(i).getValue() > sortedAverageGrades.get(i - 1).getValue());
+                        }
+                ));
+    }
+
+    public void findStudentsWithEmailDomainAppearingOnlyOnce(List<Student> students) {
+        Map<String, Long> emailDomainCounts = students.stream()
+                .filter(student -> student.getEmail() != null)
+                .map(student -> student.getEmail().substring(student.getEmail().indexOf("@") + 1))
+                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+
+        List<Student> studentsWithUniqueEmailDomain = students.stream()
+                .filter(student -> {
+                    String domain = student.getEmail() != null ? student.getEmail().substring(student.getEmail().indexOf("@") + 1) : "";
+                    return emailDomainCounts.getOrDefault(domain, 0L) == 1;
+                })
+                .toList();
+
+        System.out.println("-".repeat(Integer.parseInt("60")));
+        System.out.printf("| %-15s | %-24s | %-10s  |%n", "Full Name", "Email", "Domain");
+        System.out.println("-".repeat(Integer.parseInt("60")));
+        studentsWithUniqueEmailDomain.forEach(student -> {
+            String domain = student.getEmail() != null ? student.getEmail().substring(student.getEmail().indexOf("@") + 1) : "No Email";
+            System.out.printf("| %-15s | %-24s | %-10s |%n", student.getFirstName() + " " + student.getLastName(), student.getEmail(), domain);
+        });
+        System.out.println("-".repeat(Integer.parseInt("60")));
+    }
+
+    /**
+     * For each department, skips the top student by grade and returns the next two students.
+     * Sorts students by grade in descending order, skips the first, and limits to 2 results.
+     * Useful for finding runner-up students in each department.
+     *
+     * @param students the list of students to analyze
+     */
+    public void skipTopStudentAndReturnNextTwoByDepartment(List<Student> students) {
+        Map<String, List<Student>> topStudentsByDepartment = students.stream()
+                .collect(Collectors.groupingBy(
+                        Student::getDepartment,
+                        Collectors.collectingAndThen(
+                                Collectors.toList(),
+                                list -> list.stream()
+                                        .sorted(Comparator.comparingDouble(Student::getGrade).reversed())
+                                        .skip(1)
+                                        .limit(2)
+                                        .toList()
+                        )
+                ));
+
+        System.out.println("-".repeat(Integer.parseInt("60")));
+        System.out.printf("| %-25s | %-20s |%n", "Department", "Next 2 Students by Grade");
+        System.out.println("-".repeat(Integer.parseInt("60")));
+        topStudentsByDepartment.forEach((department, studentList) -> {
+            String nextStudents = studentList.stream()
+                    .map(student -> student.getFirstName() + " " + student.getLastName() + " (" + student.getGrade() + ")")
+                    .collect(Collectors.joining(", "));
+            System.out.printf("| %-25s | %-20s |%n", department, nextStudents);
+        });
+        System.out.println("-".repeat(Integer.parseInt("60")));
+    }
+
 }
+
