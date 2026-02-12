@@ -54,7 +54,7 @@ public class Main {
         // 7. Using a lambda expression with a Function (Input -> Output)
         System.out.println("======== 7. Using Lambda with Function ========");
         List<String> languages = Arrays.asList("Java", "Python", "C++", "JavaScript", "Ruby");
-        Function<Integer, String> getLanguageByIndex = (index) -> {
+        Function<Integer, String> getLanguageByIndex = index -> {
             if (index >= 0 && index < languages.size()) {
                 return languages.get(index);
             } else {
